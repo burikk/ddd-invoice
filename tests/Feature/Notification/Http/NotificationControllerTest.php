@@ -20,14 +20,15 @@ class NotificationControllerTest extends TestCase
     }
 
     #[DataProvider('hookActionProvider')]
-    public function testHook(string $action): void
+    public function testHook(string $action, int $status): void
     {
         $uri = route('notification.hook', [
             'action' => $action,
             'reference' => $this->faker->uuid,
         ]);
 
-        $this->getJson($uri)->assertOk();
+        $response = $this->getJson($uri);
+        $response->assertStatus($status);
     }
 
     public function testInvalid(): void
@@ -44,8 +45,8 @@ class NotificationControllerTest extends TestCase
     public static function hookActionProvider(): array
     {
         return [
-            ['delivered'],
-            ['dummy'],
+            ['delivered', 424],
+            ['dummy', 404],
         ];
     }
 }
